@@ -1,0 +1,165 @@
+.attendance-list-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    background-color: #F0EFF2;
+    min-height: 100vh;
+}
+
+.attendance-list-header {
+    align-items: center;
+    padding: 20px;
+}
+
+.attendance-list-header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5em;
+    border-left: 6px solid #000000;
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+.month-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    background-color: #FFFFFF;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.current-month {
+    font-weight: bold;
+    color: #333;
+    min-width: 120px;
+    text-align: center;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-weight: bold;
+    border: none;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary {
+    color: #000000;
+}
+
+.arrow-left,
+.arrow-right {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    color: #737373;
+}
+
+.arrow-left {
+    transform: rotate(0deg);
+}
+
+.arrow-right {
+    transform: rotate(180deg);
+}
+
+.attendance-table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+th {
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    color: #737373;
+    border-bottom: 2px solid #E1E1E1;
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #E1E1E1;
+    color: #737373;
+}
+
+td a {
+    color: #000000;
+    text-decoration: none;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    min-width: 60px;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.rejection-reason {
+    background-color: #f8f9fa;
+    padding: 10px;
+    font-size: 0.9em;
+    color: #721c24;
+}
+
+.no-data {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination .pagination-links {
+    display: flex;
+    gap: 10px;
+}
+
+.pagination .pagination-links a,
+.pagination .pagination-links span {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.pagination .pagination-links span.current {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
