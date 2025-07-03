@@ -11,10 +11,10 @@
     <div class="tab-container">
         <div class="tab-buttons">
             <button class="tab-button {{ $status === 'pending' ? 'active' : '' }}" onclick="changeTab('pending')">
-                承認待ち ({{ $pendingCount }})
+                承認待ち
             </button>
             <button class="tab-button {{ $status === 'approved' ? 'active' : '' }}" onclick="changeTab('approved')">
-                承認済み ({{ $approvedCount }})
+                承認済み
             </button>
         </div>
     </div>
@@ -33,12 +33,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($paginator as $request)
+                    @forelse($allRequests as $request)
                     <tr class="request-row {{ $request->status }}">
                         <td class="status-cell">
                             <span class="status-badge {{ $request->status }}">
                                 @if($request->status === 'pending')
-                                申請待ち
+                                承認待ち
                                 @elseif($request->status === 'approved')
                                 承認済み
                                 @else
@@ -47,7 +47,7 @@
                             </span>
                         </td>
                         <td class="user-name">{{ $request->user->name }}</td>
-                        <td class="target-date">{{ $request->target_date->format('Y年m月d日') }}</td>
+                        <td class="target-date">{{ $request->target_date->format('Y/m/d') }}</td>
                         <td class="request-reason">
                             @if($request->notes)
                             {{ Str::limit($request->notes, 30) }}
@@ -55,7 +55,7 @@
                             <span class="no-reason">理由なし</span>
                             @endif
                         </td>
-                        <td class="request-date">{{ $request->created_at->format('Y年m月d日 H:i') }}</td>
+                        <td class="request-date">{{ $request->created_at->format('Y/m/d') }}</td>
                         <td>
                             @if($request->request_type === 'attendance')
                             <a href="{{ route('admin.attendance.request.approval', ['id' => $request->id]) }}" class="action-button detail">詳細</a>
@@ -81,11 +81,7 @@
             </table>
         </div>
 
-        @if($paginator->hasPages())
-        <div class="pagination-container">
-            {{ $paginator->links() }}
-        </div>
-        @endif
+
     </main>
 </div>
 

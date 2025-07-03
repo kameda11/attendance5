@@ -24,7 +24,31 @@
                     </tr>
                     <tr>
                         <th>日付</th>
-                        <td>{{ $attendance ? $attendance->created_at->format('Y年m月d日') . '(' . $attendance->created_at->format('D') . ')' : ($selectedDate ? $selectedDate->format('Y年m月d日') . '(' . $selectedDate->format('D') . ')' : '未設定') }}</td>
+                        <td>
+                            @if($attendance)
+                            <div class="date-section">
+                                <span class="date-year-section">
+                                    <span class="date-year">{{ $attendance->created_at->format('Y') }}</span><span class="date-unit">年</span>
+                                </span>
+                                <span class="date-month-day-section">
+                                    <span class="date-month-day">{{ $attendance->created_at->format('n') }}</span><span class="date-unit">月</span>
+                                    <span class="date-month-day">{{ $attendance->created_at->format('j') }}</span><span class="date-unit">日</span>
+                                </span>
+                            </div>
+                            @elseif($selectedDate)
+                            <div class="date-section">
+                                <span class="date-year-section">
+                                    <span class="date-year">{{ $selectedDate->format('Y') }}</span><span class="date-unit">年</span>
+                                </span>
+                                <span class="date-month-day-section">
+                                    <span class="date-month-day">{{ $selectedDate->format('n') }}</span><span class="date-unit">月</span>
+                                    <span class="date-month-day">{{ $selectedDate->format('j') }}</span><span class="date-unit">日</span>
+                                </span>
+                            </div>
+                            @else
+                            未設定
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th>出勤・退勤</th>
@@ -33,7 +57,7 @@
                                 <div class="time-input">
                                     <input type="text" name="clock_in_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ old('clock_in_time', $attendanceRequest && $attendanceRequest->clock_in_time ? $attendanceRequest->clock_in_time->format('H:i') : ($attendance && $attendance->clock_in_time ? $attendance->clock_in_time->format('H:i') : '')) }}" inputmode="numeric" autocomplete="off">
                                 </div>
-                                <label>~</label>
+                                <label>～</label>
                                 <div class="time-input">
                                     <input type="text" name="clock_out_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ old('clock_out_time', $attendanceRequest && $attendanceRequest->clock_out_time ? $attendanceRequest->clock_out_time->format('H:i') : ($attendance && $attendance->clock_out_time ? $attendance->clock_out_time->format('H:i') : '')) }}" inputmode="numeric" autocomplete="off">
                                 </div>
@@ -70,7 +94,7 @@
                                 <div class="time-input">
                                     <input type="text" name="break1_start_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ old('break1_start_time') }}" inputmode="numeric" autocomplete="off">
                                 </div>
-                                <label>~</label>
+                                <label>～</label>
                                 <div class="time-input">
                                     <input type="text" name="break1_end_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ old('break1_end_time') }}" inputmode="numeric" autocomplete="off">
                                 </div>
@@ -108,7 +132,7 @@
                                 <div class="time-input">
                                     <input type="text" name="break2_start_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ old('break2_start_time') }}" inputmode="numeric" autocomplete="off">
                                 </div>
-                                <label>~</label>
+                                <label>～</label>
                                 <div class="time-input">
                                     <input type="text" name="break2_end_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ old('break2_end_time') }}" inputmode="numeric" autocomplete="off">
                                 </div>
@@ -119,7 +143,7 @@
                     <tr>
                         <th>備考</th>
                         <td>
-                            <input type="text" name="notes" class="notes-textbox" value="{{ old('notes', $attendanceRequest && $attendanceRequest->notes ? $attendanceRequest->notes : ($attendance ? ($attendance->notes ?? '') : '')) }}">
+                            <textarea name="notes" class="notes-textbox" rows="4" cols="50">{{ old('notes', $attendanceRequest && $attendanceRequest->notes ? $attendanceRequest->notes : ($attendance ? ($attendance->notes ?? '') : '')) }}</textarea>
                         </td>
                     </tr>
                 </tbody>

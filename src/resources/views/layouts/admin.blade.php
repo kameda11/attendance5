@@ -19,7 +19,6 @@
             <div class="header-utilities">
                 <a class="header__logo">
                     <img src="{{ asset('storage/logo.svg') }}" alt="coachtech">
-                    <span class="admin-badge">管理者</span>
                 </a>
                 <nav>
                     <ul class="header-nav">

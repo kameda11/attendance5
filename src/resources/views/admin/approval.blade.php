@@ -4,7 +4,7 @@
 @section('content')
 <div class="attendance-detail-container">
     <div class="attendance-detail-header">
-        <h1>修正申請承認</h1>
+        <h1>勤怠詳細</h1>
     </div>
 
     <div class="attendance-detail-table">
@@ -16,15 +16,41 @@
                 </tr>
                 <tr>
                     <th>日付</th>
-                    <td>{{ $request->attendance ? $request->attendance->created_at->format('Y年m月d日') : ($request->target_date ? $request->target_date->format('Y年m月d日') : '未設定') }}</td>
+                    <td>
+                        @if($request->attendance)
+                        <div class="date-section">
+                            <span class="date-year-section">
+                                <span class="date-year">{{ $request->attendance->created_at->format('Y') }}</span><span class="date-unit">年</span>
+                            </span>
+                            <span class="date-month-day-section">
+                                <span class="date-month-day">{{ $request->attendance->created_at->format('n') }}</span><span class="date-unit">月</span>
+                                <span class="date-month-day">{{ $request->attendance->created_at->format('j') }}</span><span class="date-unit">日</span>
+                            </span>
+                        </div>
+                        @elseif($request->target_date)
+                        <div class="date-section">
+                            <span class="date-year-section">
+                                <span class="date-year">{{ $request->target_date->format('Y') }}</span>年
+                            </span>
+                            <span class="date-month-day-section">
+                                {{ $request->target_date->format('n') }}月
+                                {{ $request->target_date->format('j') }}日
+                            </span>
+                        </div>
+                        @else
+                        未設定
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <th>出勤・退勤</th>
                     <td>
                         @if($request->clock_in_time || $request->clock_out_time)
-                        <span class="time-display">
-                            {{ $request->clock_in_time ? \Carbon\Carbon::parse($request->clock_in_time)->format('H:i') : '' }} ~ {{ $request->clock_out_time ? \Carbon\Carbon::parse($request->clock_out_time)->format('H:i') : '' }}
-                        </span>
+                        <div class="time-display">
+                            <span class="time-start">{{ $request->clock_in_time ? \Carbon\Carbon::parse($request->clock_in_time)->format('H:i') : '' }}</span>
+                            <span class="time-separator">～</span>
+                            <span class="time-end">{{ $request->clock_out_time ? \Carbon\Carbon::parse($request->clock_out_time)->format('H:i') : '' }}</span>
+                        </div>
                         @else
                         <span class="no-data">未設定</span>
                         @endif
@@ -36,9 +62,11 @@
                         @if($request->attendance && $request->attendance->breakTimes->count() > 0)
                         @php $firstBreak = $request->attendance->breakTimes->first(); @endphp
                         <div class="break-item">
-                            <span class="break-time">
-                                {{ $firstBreak->start_time ? \Carbon\Carbon::parse($firstBreak->start_time)->format('H:i') : '' }} ~ {{ $firstBreak->end_time ? \Carbon\Carbon::parse($firstBreak->end_time)->format('H:i') : '' }}
-                            </span>
+                            <div class="break-time">
+                                <span class="time-start">{{ $firstBreak->start_time ? \Carbon\Carbon::parse($firstBreak->start_time)->format('H:i') : '' }}</span>
+                                <span class="time-separator">～</span>
+                                <span class="time-end">{{ $firstBreak->end_time ? \Carbon\Carbon::parse($firstBreak->end_time)->format('H:i') : '' }}</span>
+                            </div>
                             @if($firstBreak->notes)
                             <span class="break-notes">({{ $firstBreak->notes }})</span>
                             @endif
@@ -54,9 +82,11 @@
                         @if($request->attendance && $request->attendance->breakTimes->count() > 1)
                         @php $secondBreak = $request->attendance->breakTimes->get(1); @endphp
                         <div class="break-item">
-                            <span class="break-time">
-                                {{ $secondBreak->start_time ? \Carbon\Carbon::parse($secondBreak->start_time)->format('H:i') : '' }} ~ {{ $secondBreak->end_time ? \Carbon\Carbon::parse($secondBreak->end_time)->format('H:i') : '' }}
-                            </span>
+                            <div class="break-time">
+                                <span class="time-start">{{ $secondBreak->start_time ? \Carbon\Carbon::parse($secondBreak->start_time)->format('H:i') : '' }}</span>
+                                <span class="time-separator">～</span>
+                                <span class="time-end">{{ $secondBreak->end_time ? \Carbon\Carbon::parse($secondBreak->end_time)->format('H:i') : '' }}</span>
+                            </div>
                             @if($secondBreak->notes)
                             <span class="break-notes">({{ $secondBreak->notes }})</span>
                             @endif
@@ -84,7 +114,7 @@
         @if($request->status === 'pending')
         <form action="{{ route('admin.attendance.request.approve', ['id' => $request->id]) }}" method="POST" style="display: inline;">
             @csrf
-            <button type="submit" class="btn btn-primary">承認する</button>
+            <button type="submit" class="btn btn-primary">承認</button>
         </form>
         @else
         <button class="btn btn-secondary" disabled>

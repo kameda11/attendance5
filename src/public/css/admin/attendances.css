@@ -1,15 +1,11 @@
-/* admin-attendances.css */
-
-.attendances-container {
-    max-width: 1200px;
+.admin-attendances-container {
     margin: 0 auto;
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
+    padding: 20px 150px;
     background-color: #F0EFF2;
     min-height: 100vh;
 }
 
-.attendances-header {
+.header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -17,42 +13,60 @@
     padding: 20px;
 }
 
-.attendances-header h1 {
+.header-content h1 {
     margin: 0;
-    color: #333;
+    color: #000000;
     font-size: 1.5em;
-    border-left: 6px solid #000000;
+    border-left: 8px solid #000000;
     padding-left: 10px;
 }
 
-.back-button {
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #737373;
+    background-color: #ffffff;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.nav-button {
     color: #737373;
     text-decoration: none;
     padding: 10px 20px;
     border-radius: 6px;
-    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.current-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #737373;
+    flex: 1;
+}
+
+.current-date h2 {
+    margin: 10px;
+    color: #000000;
+    font-weight: bold;
 }
 
 .arrow-left,
 .arrow-right {
     width: 20px;
     height: 20px;
-    object-fit: contain;
-}
-
-.arrow-left {
-    transform: rotate(0deg);
-}
-
-.arrow-right {
-    transform: rotate(0deg);
+    color: #737373;
 }
 
 .attendances-main {
-    background: white;
+    background: #ffffff;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
 }
 
 .attendances-table {
@@ -67,16 +81,15 @@ table {
 
 th {
     padding: 15px;
-    text-align: left;
+    text-align: center;
     font-weight: bold;
     color: #737373;
-    border-bottom: 2px solid #E1E1E1;
-    background: #f8f9fa;
+    border-bottom: 3px solid #E1E1E1;
 }
 
 td {
     padding: 12px 15px;
-    border-bottom: 1px solid #E1E1E1;
+    border-bottom: 2px solid #E1E1E1;
     color: #737373;
 }
 
@@ -90,65 +103,5 @@ td {
 }
 
 .action-button.detail {
-    background: #737373;
-    color: white;
-}
-
-
-.status-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: bold;
-    text-align: center;
-    min-width: 60px;
-}
-
-.status-pending {
-    background-color: #fff3cd;
-    color: #856404;
-}
-
-.status-approved {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.status-rejected {
-    background-color: #f8d7da;
-    color: #721c24;
-}
-
-.no-data {
-    text-align: center;
-    color: #6c757d;
-    font-style: italic;
-    padding: 20px;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin: 20px;
-}
-
-.pagination .pagination-links {
-    display: flex;
-    gap: 10px;
-}
-
-.pagination .pagination-links a,
-.pagination .pagination-links span {
-    padding: 8px 12px;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    text-decoration: none;
-    color: #007bff;
-}
-
-.pagination .pagination-links span.current {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
+    color: #000000;
 }

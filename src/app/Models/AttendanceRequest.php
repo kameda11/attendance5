@@ -18,12 +18,14 @@ class AttendanceRequest extends Model
         'clock_in_time',
         'clock_out_time',
         'notes',
+        'break_info',
     ];
 
     protected $casts = [
         'target_date' => 'date',
         'clock_in_time' => 'datetime',
         'clock_out_time' => 'datetime',
+        'break_info' => 'array',
     ];
 
     public function user()

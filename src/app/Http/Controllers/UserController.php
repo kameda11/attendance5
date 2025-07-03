@@ -524,57 +524,51 @@ class UserController extends Controller
             $requestData['clock_out_time'] = $request->clock_out_time . ':00';
         }
 
+        // 休憩情報を収集
+        $breakInfo = [];
+        if ($request->break1_start_time || $request->break1_end_time) {
+            $breakInfo[] = [
+                'start_time' => $request->break1_start_time,
+                'end_time' => $request->break1_end_time,
+            ];
+        }
+        if ($request->break2_start_time || $request->break2_end_time) {
+            $breakInfo[] = [
+                'start_time' => $request->break2_start_time,
+                'end_time' => $request->break2_end_time,
+            ];
+        }
+
+        // 休憩情報を追加
+        if (!empty($breakInfo)) {
+            $requestData['break_info'] = $breakInfo;
+        }
+
         // 勤怠申請を作成
         $attendanceRequest = AttendanceRequest::create($requestData);
-
-        // 休憩時間の申請処理（新規作成の場合）
-        $this->processBreakRequestsForNew($user, $request);
 
         return redirect()->route('user.attendance.list');
     }
 
     /**
      * 新規作成時の休憩申請を処理
+     * 新規作成時は、勤怠申請が承認されてから休憩申請を処理するため、
+     * ここでは休憩申請を作成しない
      */
     private function processBreakRequestsForNew($user, $request)
     {
-        // 休憩1の申請処理
-        if ($request->break1_start_time || $request->break1_end_time) {
-            $this->createBreakRequestForNew($user, $request, 1);
-        }
-
-        // 休憩2の申請処理
-        if ($request->break2_start_time || $request->break2_end_time) {
-            $this->createBreakRequestForNew($user, $request, 2);
-        }
+        // 新規作成時は、勤怠申請が承認されてから休憩申請を処理する
+        // ここでは何もしない
     }
 
     /**
      * 新規作成時の個別の休憩申請を作成
+     * このメソッドは使用しない（新規作成時は勤怠申請承認後に処理）
      */
     private function createBreakRequestForNew($user, $request, $breakNumber)
     {
-        $startTimeField = "break{$breakNumber}_start_time";
-        $endTimeField = "break{$breakNumber}_end_time";
-
-        $requestData = [
-            'user_id' => $user->id,
-            'break_id' => null,
-            'attendance_id' => null, // 新規作成時はattendance_idはnull
-            'target_date' => $request->date,
-            'request_type' => 'create',
-            'status' => 'pending',
-        ];
-
-        // 時間データの処理
-        if ($request->$startTimeField) {
-            $requestData['start_time'] = $request->$startTimeField . ':00';
-        }
-        if ($request->$endTimeField) {
-            $requestData['end_time'] = $request->$endTimeField . ':00';
-        }
-
-        BreakRequest::create($requestData);
+        // 新規作成時は、勤怠申請が承認されてから休憩申請を処理する
+        // このメソッドは使用しない
     }
 
     /**

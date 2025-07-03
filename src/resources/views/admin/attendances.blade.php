@@ -5,22 +5,26 @@
 
 <div class="admin-attendances-container">
     <div class="header-content">
-        <h1>勤怠一覧</h1>
+        <h1>{{ $selectedDate->format('Y年m月d日') }}の勤怠</h1>
     </div>
 
     <div class="date-navigation">
         <div class="nav-content">
             <a href="{{ route('admin.attendances', ['date' => $prevDate->format('Y-m-d')]) }}" class="nav-button prev">
-                <img src="{{ asset('storage/arrow.png') }}" alt="前日" class="arrow-left">
+                <svg class="arrow-left" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
                 前日
             </a>
 
             <div class="current-date">
-                <h2>{{ $selectedDate->format('Y年m月d日') }} ({{ $selectedDate->isoFormat('ddd') }})</h2>
+                <h2>{{ $selectedDate->format('Y/m/d') }}</h2>
             </div>
             <a href="{{ route('admin.attendances', ['date' => $nextDate->format('Y-m-d')]) }}" class="nav-button next">
                 翌日
-                <img src="{{ asset('storage/arrow.png') }}" alt="翌日" class="arrow-right">
+                <svg class="arrow-right" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </a>
         </div>
     </div>

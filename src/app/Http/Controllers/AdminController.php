@@ -110,25 +110,7 @@ class AdminController extends Controller
         $allRequests = $attendanceRequests->concat($breakRequests)
             ->sortByDesc('created_at');
 
-        // ページネーション用に配列を分割
-        $perPage = 20;
-        $currentPage = $request->get('page', 1);
-        $offset = ($currentPage - 1) * $perPage;
-        $requests = $allRequests->slice($offset, $perPage);
-
-        // 手動でページネーション情報を作成
-        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
-            $requests,
-            $allRequests->count(),
-            $perPage,
-            $currentPage,
-            [
-                'path' => $request->url(),
-                'pageName' => 'page',
-            ]
-        );
-
-        return view('admin.requests', compact('paginator', 'status', 'pendingCount', 'approvedCount'));
+        return view('admin.requests', compact('allRequests', 'status', 'pendingCount', 'approvedCount'));
     }
 
     /**
@@ -476,7 +458,10 @@ class AdminController extends Controller
                 $createData['clock_out_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->clock_out_time;
             }
 
-            Attendance::create($createData);
+            $attendance = Attendance::create($createData);
+
+            // 新規作成申請が承認された場合、休憩申請も処理する
+            $this->processBreakRequestsAfterApproval($attendance, $attendanceRequest);
         }
 
         return redirect()->route('admin.attendance.requests')
@@ -725,5 +710,61 @@ class AdminController extends Controller
             ->where('target_date', $targetDate)
             ->where('status', 'pending')
             ->update(['status' => 'approved']);
+    }
+
+    /**
+     * 新規作成申請承認後の休憩申請処理
+     */
+    private function processBreakRequestsAfterApproval($attendance, $attendanceRequest)
+    {
+        // 勤怠申請に含まれる休憩情報を処理
+        if ($attendanceRequest->break_info) {
+            foreach ($attendanceRequest->break_info as $breakInfo) {
+                $breakData = [
+                    'attendance_id' => $attendance->id,
+                ];
+
+                if (isset($breakInfo['start_time'])) {
+                    $breakData['start_time'] = $attendanceRequest->target_date . ' ' . $breakInfo['start_time'] . ':00';
+                }
+                if (isset($breakInfo['end_time'])) {
+                    $breakData['end_time'] = $attendanceRequest->target_date . ' ' . $breakInfo['end_time'] . ':00';
+                }
+
+                Breaktime::create($breakData);
+            }
+        }
+
+        // 既存の休憩申請も処理（修正申請の場合）
+        $breakRequests = BreakRequest::where('user_id', $attendance->user_id)
+            ->where('target_date', $attendanceRequest->target_date)
+            ->where('status', 'pending')
+            ->where('request_type', 'update')
+            ->get();
+
+        foreach ($breakRequests as $breakRequest) {
+            // 休憩申請を承認状態に更新
+            $breakRequest->update([
+                'status' => 'approved',
+                'attendance_id' => $attendance->id,
+            ]);
+
+            // 休憩データを更新
+            if ($breakRequest->break) {
+                $updateData = [];
+
+                if ($breakRequest->start_time) {
+                    $updateData['start_time'] = $breakRequest->target_date . ' ' . $breakRequest->start_time;
+                }
+                if ($breakRequest->end_time) {
+                    $updateData['end_time'] = $breakRequest->target_date . ' ' . $breakRequest->end_time;
+                }
+                if ($breakRequest->notes) {
+                    $updateData['notes'] = $breakRequest->notes;
+                }
+
+                $breakRequest->break->update($updateData);
+            }
+        }
     }
 }
