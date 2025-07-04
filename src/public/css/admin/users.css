@@ -1,10 +1,8 @@
-/* admin-users.css */
-
 .admin-users-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 50px;
+    width: 80%;
 }
 
 .header-content {
@@ -13,17 +11,18 @@
 }
 
 .header-content h1 {
-    color: #333;
-    font-size: 2.5rem;
-    font-weight: 600;
+    color: #000000;
+    font-size: 24px;
+    font-weight: bold;
     margin: 0;
-    padding: 20px 0;
+    padding-left: 10px;
+    border-left: 4px solid #000000;
+    text-align: left;
 }
 
 .users-main {
-    background: white;
+    background: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
@@ -34,121 +33,76 @@
 .users-table table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    background: #ffffff;
+}
+
+.users-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .users-table thead {
-    background: #f8f9fa;
+    background: #ffffff;
 }
 
 .users-table th {
-    padding: 15px 20px;
-    text-align: left;
-    font-weight: 600;
-    color: #495057;
-    border-bottom: 2px solid #dee2e6;
-    font-size: 1rem;
+    padding: 10px 0px 10px 0px;
+    text-align: center;
+    font-weight: bold;
+    color: #737373;
+    border-bottom: 3px solid #E1E1E1;
+    font-size: 16px;
+}
+
+.users-table th:first-child {
+    padding-left: 100px;
+}
+
+.users-table th:last-child {
+    padding-right: 100px;
 }
 
 .users-table td {
-    padding: 15px 20px;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 2px solid #E1E1E1;
     vertical-align: middle;
-}
-
-.users-table tbody tr:hover {
-    background-color: #f8f9fa;
-    transition: background-color 0.2s ease;
+    text-align: center;
+    font-weight: bold;
 }
 
 .user-name {
-    font-weight: 500;
-    color: #333;
+    font-weight: bold;
+    color: #737373;
 }
 
 .user-info {
-    display: flex;
     align-items: center;
     gap: 10px;
+    padding-left: 100px;
 }
 
 .user-info .name {
-    font-size: 1.1rem;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .user-email {
-    color: #6c757d;
-    font-size: 0.95rem;
+    color: #737373;
+    font-size: 16px;
 }
 
 .action-button {
     display: inline-block;
-    padding: 8px 16px;
+    padding: 8px 100px 8px 0px;
     border-radius: 6px;
     text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-    transition: all 0.2s ease;
+    font-weight: bold;
+    font-size: 16px;
     border: none;
-    cursor: pointer;
-}
-
-.action-button.detail {
-    background-color: #007bff;
-    color: white;
-}
-
-.action-button.detail:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+    color: #000000;
 }
 
 .no-users {
     text-align: center;
-    color: #6c757d;
-    font-style: italic;
-    padding: 40px 20px;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .admin-users-container {
-        padding: 10px;
-    }
-
-    .header-content h1 {
-        font-size: 2rem;
-    }
-
-    .users-table th,
-    .users-table td {
-        padding: 12px 15px;
-        font-size: 0.9rem;
-    }
-
-    .user-info .name {
-        font-size: 1rem;
-    }
-
-    .action-button {
-        padding: 6px 12px;
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .users-table {
-        font-size: 0.85rem;
-    }
-
-    .users-table th,
-    .users-table td {
-        padding: 10px 12px;
-    }
-
-    .header-content h1 {
-        font-size: 1.8rem;
-    }
+    color: #737373;
+    padding: 20px 20px;
+    font-size: 16px;
 }
