@@ -1,6 +1,6 @@
 .attendance-detail-container {
     margin: 0 auto;
-    padding: 20px 150px;
+    padding: 50px 250px;
     background-color: #F0EFF2;
     min-height: 100vh;
 }
@@ -55,7 +55,6 @@ tr:last-child td {
 .time-inputs {
     display: flex;
     align-items: center;
-    gap: 15px;
     flex-wrap: wrap;
 }
 
@@ -66,7 +65,7 @@ tr:last-child td {
 
 .time-display {
     min-width: 60px;
-    text-align: center;
+    text-align: left;
 }
 
 .time-inputs label {
@@ -94,8 +93,7 @@ tr:last-child td {
 }
 
 .break-time {
-    font-family: monospace;
-    font-size: 14px;
+    font-weight: bold;
 }
 
 .break-notes {
@@ -126,15 +124,11 @@ tr:last-child td {
 }
 
 .btn-secondary {
-    background: #FFFFFF;
-    color: #000000;
-    border: 2px solid #000000;
+    background: #696969;
+    color: #FFFFFF;
+    border: 2px solid #696969;
 }
 
-.btn:disabled {
-    color: #737373;
-    border: none;
-}
 
 .date-section {
     display: flex;
@@ -151,24 +145,12 @@ tr:last-child td {
     align-items: center;
 }
 
-.time-display {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.break-time {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
 .time-start {
     font-weight: bold;
 }
 
 .time-separator {
-    margin: 0 10px;
+    margin: 0 30px;
     color: #000000;
 }
 

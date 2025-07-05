@@ -11,10 +11,10 @@
     <div class="tab-container">
         <div class="tab-buttons">
             <button class="tab-button {{ $status === 'pending' ? 'active' : '' }}" onclick="changeTab('pending')">
-                承認待ち ({{ $pendingCount }})
+                承認待ち
             </button>
             <button class="tab-button {{ $status === 'approved' ? 'active' : '' }}" onclick="changeTab('approved')">
-                承認済み ({{ $approvedCount }})
+                承認済み
             </button>
         </div>
     </div>
@@ -47,7 +47,7 @@
                             </span>
                         </td>
                         <td class="user-name">{{ $request->user ? $request->user->name : '不明' }}</td>
-                        <td class="target-date">{{ $request->target_date->format('Y年m月d日') }}</td>
+                        <td class="target-date">{{ $request->target_date->format('Y/m/d') }}</td>
                         <td class="request-reason">
                             @if($request->notes)
                             {{ Str::limit($request->notes, 30) }}
@@ -55,12 +55,20 @@
                             <span class="no-reason">理由なし</span>
                             @endif
                         </td>
-                        <td class="request-date">{{ $request->created_at->format('Y年m月d日 H:i') }}</td>
+                        <td class="request-date">{{ $request->created_at->format('Y/m/d') }}</td>
                         <td>
                             @if($request->request_type === 'attendance')
-                            <a href="{{ route('admin.attendance.detail', ['id' => $request->attendance_id, 'user_id' => $request->user_id, 'date' => $request->target_date->format('Y-m-d')]) }}" class="action-button detail">詳細</a>
+                            @if($request->attendance_id > 0)
+                            <a href="{{ route('user.attendance.detail', ['id' => $request->attendance_id]) }}" class="action-button detail">詳細</a>
+                            @else
+                            <a href="{{ route('user.attendance.detail', ['id' => 0, 'date' => $request->target_date->format('Y-m-d')]) }}" class="action-button detail">詳細</a>
+                            @endif
                             @elseif($request->request_type === 'break')
-                            <a href="{{ route('admin.attendance.detail', ['id' => $request->attendance_id, 'user_id' => $request->user_id, 'date' => $request->target_date->format('Y-m-d')]) }}" class="action-button detail">詳細</a>
+                            @if($request->attendance_id > 0)
+                            <a href="{{ route('user.attendance.detail', ['id' => $request->attendance_id]) }}" class="action-button detail">詳細</a>
+                            @else
+                            <a href="{{ route('user.attendance.detail', ['id' => 0, 'date' => $request->target_date->format('Y-m-d')]) }}" class="action-button detail">詳細</a>
+                            @endif
                             @else
                             <span class="action-button detail disabled">詳細</span>
                             @endif

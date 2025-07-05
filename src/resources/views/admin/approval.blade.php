@@ -59,7 +59,16 @@
                 <tr>
                     <th>休憩</th>
                     <td>
-                        @if($request->attendance && $request->attendance->breakTimes->count() > 0)
+                        @if($request->break_info && count($request->break_info) > 0)
+                        @php $firstBreak = $request->break_info[0]; @endphp
+                        <div class="break-item">
+                            <div class="break-time">
+                                <span class="time-start">{{ $firstBreak['start_time'] ?? '' }}</span>
+                                <span class="time-separator">～</span>
+                                <span class="time-end">{{ $firstBreak['end_time'] ?? '' }}</span>
+                            </div>
+                        </div>
+                        @elseif($request->attendance && $request->attendance->breakTimes->count() > 0)
                         @php $firstBreak = $request->attendance->breakTimes->first(); @endphp
                         <div class="break-item">
                             <div class="break-time">
@@ -79,7 +88,16 @@
                 <tr>
                     <th>休憩2</th>
                     <td>
-                        @if($request->attendance && $request->attendance->breakTimes->count() > 1)
+                        @if($request->break_info && count($request->break_info) > 1)
+                        @php $secondBreak = $request->break_info[1]; @endphp
+                        <div class="break-item">
+                            <div class="break-time">
+                                <span class="time-start">{{ $secondBreak['start_time'] ?? '' }}</span>
+                                <span class="time-separator">～</span>
+                                <span class="time-end">{{ $secondBreak['end_time'] ?? '' }}</span>
+                            </div>
+                        </div>
+                        @elseif($request->attendance && $request->attendance->breakTimes->count() > 1)
                         @php $secondBreak = $request->attendance->breakTimes->get(1); @endphp
                         <div class="break-item">
                             <div class="break-time">
@@ -118,13 +136,7 @@
         </form>
         @else
         <button class="btn btn-secondary" disabled>
-            @if($request->status === 'approved')
             承認済み
-            @elseif($request->status === 'rejected')
-            却下済み
-            @else
-            処理済み
-            @endif
         </button>
         @endif
     </div>

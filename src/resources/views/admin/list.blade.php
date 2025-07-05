@@ -5,13 +5,16 @@
 
 <div class="admin-attendances-container">
     <div class="header-content">
-        <h1>{{ $user->name }}の勤怠一覧</h1>
+        <h1>{{ $user->name }}の勤怠</h1>
     </div>
 
     <div class="date-navigation">
         <div class="nav-content">
             <a href="{{ route('admin.user.attendance.list', ['userId' => $user->id, 'year' => $prevMonth->year, 'month' => $prevMonth->month]) }}" class="btn btn-secondary">
-                <img src="{{ asset('storage/arrow.png') }}" alt="前月" class="arrow-left">前月
+                <svg class="arrow-left" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                前月
             </a>
 
             <div class="current-date">
@@ -33,7 +36,9 @@
             </div>
 
             <a href="{{ route('admin.user.attendance.list', ['userId' => $user->id, 'year' => $nextMonth->year, 'month' => $nextMonth->month]) }}" class="btn btn-secondary">翌月
-                <img src="{{ asset('storage/arrow.png') }}" alt="翌月" class="arrow-right">
+                <svg class="arrow-right" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M12 5L19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </a>
         </div>
     </div>
@@ -54,7 +59,7 @@
                 <tbody>
                     @foreach($calendar as $date)
                     <tr class="{{ $date['isToday'] ? 'today' : '' }} {{ $date['isWeekend'] ? 'weekend' : '' }}">
-                        <td>{{ $currentMonth->format('n') }}/{{ $date['day'] }}({{ $date['weekday'] }})</td>
+                        <td>{{ $currentMonth->format('m') }}/{{ sprintf('%02d', $date['day']) }}({{ $date['weekday'] }})</td>
                         <td>{{ $date['attendance'] && $date['attendance']->clock_in_time ? $date['attendance']->clock_in_time->format('H:i') : '' }}</td>
                         <td>{{ $date['attendance'] && $date['attendance']->clock_out_time ? $date['attendance']->clock_out_time->format('H:i') : '' }}</td>
                         <td>{{ $date['breakTime'] }}</td>

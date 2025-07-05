@@ -72,13 +72,13 @@
 .btn-secondary {
     background: #ffffff;
     color: #737373;
-    border: none;
+    text-decoration: none;
 }
 
 .arrow-left,
 .arrow-right {
-    height: 16px;
-    filter: brightness(0) saturate(100%) invert(45%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0.45) contrast(1);
+    width: 20px;
+    height: 20px;
     color: #737373;
 }
 

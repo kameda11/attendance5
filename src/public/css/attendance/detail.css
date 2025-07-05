@@ -1,10 +1,5 @@
-/* attendance-detail.css */
-
 .attendance-detail-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
+    padding: 50px 250px;
     background-color: #F0EFF2;
     min-height: 100vh;
 }
@@ -14,16 +9,14 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    padding: 20px;
 }
 
 .attendance-detail-header h1 {
     margin: 0;
-    color: #333;
+    color: #000000;
     font-size: 1.5em;
-    border-left: 6px solid #000000;
+    border-left: 8px solid #000000;
     padding-left: 10px;
-    margin-bottom: 10px;
 }
 
 .btn {
@@ -44,10 +37,10 @@
 }
 
 .attendance-detail-table {
-    background: white;
+    background: #ffffff;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #E1E1E1;
 }
 
 table {
@@ -56,19 +49,19 @@ table {
 }
 
 th {
-    padding: 20px;
+    padding: 20px 50px;
     text-align: left;
     font-weight: bold;
-    color: #333;
-    background: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
+    color: #737373;
+    border-bottom: 2px solid #E1E1E1;
     width: 30%;
 }
 
 td {
     padding: 20px;
-    border-bottom: 1px solid #dee2e6;
-    color: #333;
+    border-bottom: 2px solid #E1E1E1;
+    color: #000000;
+    font-weight: bold;
 }
 
 tr:last-child th,
@@ -89,45 +82,44 @@ tr:last-child td {
 }
 
 .time-input input[type="text"] {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
+    padding: 5px 12px;
+    border: 1px solid #E1E1E1;
     border-radius: 4px;
     font-size: 14px;
     width: 80px;
     text-align: center;
-    font-family: monospace;
 }
-
 
 .time-inputs label {
     font-weight: bold;
-    color: #333;
+    color: #000000;
     font-size: 16px;
-    margin: 0 5px;
+    margin: 0 10px;
 }
 
 .status-textbox {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
+    padding: 5px 12px;
+    border: 1px solid #E1E1E1;
     border-radius: 4px;
     font-size: 14px;
-    width: 200px;
+    width: 400px;
+    resize: vertical;
+    font-family: inherit;
 }
 
 .notes-textarea {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
+    padding: 5px 12px;
+    border: 1px solid #E1E1E1;
     border-radius: 4px;
     font-size: 14px;
-    width: 100%;
-    min-height: 80px;
+    width: 400px;
     resize: vertical;
     font-family: inherit;
 }
 
 .status-select {
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid #E1E1E1;
     border-radius: 4px;
     font-size: 14px;
     min-width: 120px;
@@ -137,13 +129,12 @@ tr:last-child td {
     display: flex;
     justify-content: right;
     margin-top: 30px;
-    padding: 20px;
 }
 
 .btn-primary {
     background: #000000;
     color: #FFFFFF;
-    padding: 12px 30px;
+    padding: 8px 40px;
     font-size: 1.1em;
     font-weight: bold;
     border: none;
@@ -151,16 +142,112 @@ tr:last-child td {
 }
 
 .attendance-notice {
-    background: #fff3cd;
-    border: 1px solid #ffeaa7;
-    border-radius: 5px;
-    padding: 15px;
     margin-bottom: 20px;
-    color: #856404;
+    color: #FF0000;
+    font-weight: bold;
 }
 
 .attendance-notice p {
     margin: 0;
     font-size: 14px;
     font-weight: 500;
+}
+
+.time-display {
+    font-weight: bold;
+    color: #000000;
+    font-size: 16px;
+}
+
+.notes-display {
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #E1E1E1;
+    border-radius: 4px;
+    font-size: 14px;
+    min-height: 80px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.date-display {
+    color: #000000;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.date-year {
+    color: #000000;
+    font-weight: bold;
+    margin-right: 60px;
+}
+
+.date-month-day {
+    color: #000000;
+    font-weight: bold;
+}
+
+/* 承認待ち表示用のスタイル */
+.pending-display {
+    font-weight: bold;
+    color: #000000;
+}
+
+.pending-time-display {
+    font-weight: bold;
+    color: #000000;
+}
+
+.pending-clock-in-time {
+    color: #000000;
+    font-weight: bold;
+}
+
+.pending-time-separator {
+    color: #000000;
+    font-weight: bold;
+    margin: 0 30px;
+}
+
+.pending-clock-out-time {
+    color: #000000;
+    font-weight: bold;
+}
+
+.pending-break-time {
+    color: #000000;
+    font-weight: bold;
+}
+
+.pending-break-start-time {
+    color: #000000;
+    font-weight: bold;
+}
+
+.pending-break-separator {
+    color: #000000;
+    font-weight: bold;
+    margin: 0 30px;
+}
+
+.pending-break-end-time {
+    color: #000000;
+    font-weight: bold;
+}
+
+.pending-break-notes {
+    color: #000000;
+    margin-left: 8px;
+}
+
+.pending-notes-display {
+    color: #000000;
+    font-weight: bold;
+}
+
+.status-badge {
+    display: inline-block;
+    font-weight: bold;
+    min-width: 80px;
+    color: #737373;
 }

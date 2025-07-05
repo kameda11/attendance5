@@ -11,6 +11,7 @@
         @csrf
         @if($attendance)
         @method('PUT')
+        <input type="hidden" name="date" value="{{ $selectedDate ? $selectedDate->format('Y-m-d') : $attendance->created_at->format('Y-m-d') }}">
         @else
         <input type="hidden" name="user_id" value="{{ $user ? $user->id : '' }}">
         <input type="hidden" name="date" value="{{ $selectedDate ? $selectedDate->format('Y-m-d') : '' }}">
@@ -25,17 +26,7 @@
                     <tr>
                         <th>日付</th>
                         <td>
-                            @if($attendance)
-                            <div class="date-section">
-                                <span class="date-year-section">
-                                    <span class="date-year">{{ $attendance->created_at->format('Y') }}</span><span class="date-unit">年</span>
-                                </span>
-                                <span class="date-month-day-section">
-                                    <span class="date-month-day">{{ $attendance->created_at->format('n') }}</span><span class="date-unit">月</span>
-                                    <span class="date-month-day">{{ $attendance->created_at->format('j') }}</span><span class="date-unit">日</span>
-                                </span>
-                            </div>
-                            @elseif($selectedDate)
+                            @if($selectedDate)
                             <div class="date-section">
                                 <span class="date-year-section">
                                     <span class="date-year">{{ $selectedDate->format('Y') }}</span><span class="date-unit">年</span>
@@ -43,6 +34,16 @@
                                 <span class="date-month-day-section">
                                     <span class="date-month-day">{{ $selectedDate->format('n') }}</span><span class="date-unit">月</span>
                                     <span class="date-month-day">{{ $selectedDate->format('j') }}</span><span class="date-unit">日</span>
+                                </span>
+                            </div>
+                            @elseif($attendance)
+                            <div class="date-section">
+                                <span class="date-year-section">
+                                    <span class="date-year">{{ $attendance->created_at->format('Y') }}</span><span class="date-unit">年</span>
+                                </span>
+                                <span class="date-month-day-section">
+                                    <span class="date-month-day">{{ $attendance->created_at->format('n') }}</span><span class="date-unit">月</span>
+                                    <span class="date-month-day">{{ $attendance->created_at->format('j') }}</span><span class="date-unit">日</span>
                                 </span>
                             </div>
                             @else

@@ -1,5 +1,5 @@
 .login-body {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     min-height: 100vh;
 }
 
@@ -7,10 +7,11 @@
     align-items: center;
     justify-content: center;
     min-height: calc(100vh - 80px);
+    padding: 30px 15px;
 }
 
 .admin-login-body {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     min-height: 100vh;
 }
 

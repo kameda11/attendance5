@@ -23,8 +23,8 @@ class BreakRequest extends Model
 
     protected $casts = [
         'target_date' => 'date',
-        'start_time' => 'datetime',
-        'end_time' => 'datetime',
+        'start_time' => 'time',
+        'end_time' => 'time',
     ];
 
     /**

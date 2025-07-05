@@ -1,41 +1,72 @@
 .attendance-list-container {
-    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
+    padding: 20px 150px;
     background-color: #F0EFF2;
     min-height: 100vh;
 }
 
 .attendance-list-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 30px;
     padding: 20px;
 }
 
 .attendance-list-header h1 {
     margin: 0;
-    color: #333;
+    color: #000000;
     font-size: 1.5em;
-    border-left: 6px solid #000000;
+    border-left: 8px solid #000000;
     padding-left: 10px;
-    margin-bottom: 10px;
 }
 
 .month-navigation {
+    margin-bottom: 30px;
+}
+
+.nav-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 30px;
-    background-color: #FFFFFF;
-    padding: 10px;
+    color: #737373;
+    background-color: #ffffff;
     border-radius: 10px;
+    font-weight: bold;
 }
 
-.current-month {
+.nav-button {
+    color: #737373;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.current-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #737373;
+    flex: 1;
+    gap: 10px;
+}
+
+.current-date h2 {
+    margin: 10px;
+    color: #000000;
     font-weight: bold;
-    color: #333;
-    min-width: 120px;
-    text-align: center;
+}
+
+.month-selector select {
+    padding: 8px 12px;
+    border: 1px solid #000000;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #ffffff;
+    color: #737373;
 }
 
 .btn {
@@ -47,31 +78,27 @@
 }
 
 .btn-secondary {
-    color: #000000;
+    background: #ffffff;
+    color: #737373;
+    text-decoration: none;
 }
 
 .arrow-left,
 .arrow-right {
     width: 20px;
     height: 20px;
-    object-fit: contain;
     color: #737373;
 }
 
-.arrow-left {
-    transform: rotate(0deg);
-}
-
-.arrow-right {
-    transform: rotate(180deg);
+.attendance-main {
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 50px;
 }
 
 .attendance-table {
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
+    overflow-x: auto;
 }
 
 table {
@@ -82,21 +109,35 @@ table {
 
 th {
     padding: 15px;
-    text-align: left;
+    text-align: center;
     font-weight: bold;
     color: #737373;
-    border-bottom: 2px solid #E1E1E1;
+    border-bottom: 3px solid #E1E1E1;
 }
 
 td {
     padding: 12px 15px;
-    border-bottom: 1px solid #E1E1E1;
+    border-bottom: 2px solid #E1E1E1;
     color: #737373;
 }
 
 td a {
     color: #000000;
     text-decoration: none;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    color: #737373;
+}
+
+.action-button.detail {
+    color: #000000;
 }
 
 .status-badge {
@@ -136,30 +177,4 @@ td a {
     color: #6c757d;
     font-style: italic;
     padding: 20px;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination .pagination-links {
-    display: flex;
-    gap: 10px;
-}
-
-.pagination .pagination-links a,
-.pagination .pagination-links span {
-    padding: 8px 12px;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    text-decoration: none;
-    color: #007bff;
-}
-
-.pagination .pagination-links span.current {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
 }

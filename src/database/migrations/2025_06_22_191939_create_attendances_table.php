@@ -17,7 +17,7 @@ class CreateAttendancesTable extends Migration
         // 新しいテーブルを作成
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade')->nullable();
             $table->datetime('clock_in_time')->nullable();
             $table->datetime('clock_out_time')->nullable();
             $table->text('notes')->nullable();
