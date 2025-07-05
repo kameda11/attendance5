@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller
 {
@@ -43,12 +44,18 @@ class LoginController extends Controller
     /**
      * ログイン処理
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = $request->validated();
+
+        // メールアドレスが登録されているかチェック
+        $user = User::where('email', $credentials['email'])->first();
+        
+        if (!$user) {
+            return back()->withErrors([
+                'email' => 'ログイン情報が登録されていません。',
+            ])->onlyInput('email');
+        }
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
@@ -57,7 +64,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'メールアドレスまたはパスワードが正しくありません。',
+            'email' => 'パスワードが正しくありません。',
         ])->onlyInput('email');
     }
 

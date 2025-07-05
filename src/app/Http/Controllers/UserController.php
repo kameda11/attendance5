@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Attendance;
-use App\Models\AttendanceRequest;
-use App\Models\Breaktime;
 use App\Models\BreakRequest;
-use App\Http\Requests\AttendanceRequest as AttendanceUpdateRequest;
+use App\Models\AttendanceRequest;
+use App\Http\Requests\AttendanceRequest as AttendanceRequestValidation;
+use App\Http\Requests\AttendanceCreateRequest;
+use App\Http\Requests\AttendanceUpdateRequest;
 use App\Http\Requests\AttendanceStoreRequest;
 
 class UserController extends Controller
@@ -19,6 +20,7 @@ class UserController extends Controller
      */
     public function attendance()
     {
+        /** @var User $user */
         $user = Auth::user();
         $todayAttendance = $user->attendances()
             ->with('breakTimes')
@@ -39,6 +41,7 @@ class UserController extends Controller
      */
     public function clockIn(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         // 今日の出勤記録を取得
@@ -70,6 +73,7 @@ class UserController extends Controller
      */
     public function clockOut(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         // 今日の最新の出勤記録を取得
@@ -101,6 +105,7 @@ class UserController extends Controller
      */
     public function breakStart(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         // 今日の最新の勤務記録を取得（退勤済みでないもの）
@@ -143,6 +148,7 @@ class UserController extends Controller
      */
     public function breakEnd(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         // 今日の最新の勤務記録を取得（退勤済みでないもの）
@@ -192,6 +198,7 @@ class UserController extends Controller
      */
     public function attendanceHistory(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
         $attendances = $user->attendances()
             ->with('breakTimes')
@@ -206,6 +213,7 @@ class UserController extends Controller
      */
     public function attendanceList(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         // 年月の取得（デフォルトは現在の年月）
@@ -356,6 +364,7 @@ class UserController extends Controller
 
     public function attendanceDetail($id)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         if ($id == 0) {
@@ -434,7 +443,7 @@ class UserController extends Controller
             $firstBreakRequest = $pendingBreakRequests->first();
             $data['break1StartTime'] = $firstBreakRequest->start_time ? (is_string($firstBreakRequest->start_time) ? $firstBreakRequest->start_time : $firstBreakRequest->start_time->format('H:i')) : '';
             $data['break1EndTime'] = $firstBreakRequest->end_time ? (is_string($firstBreakRequest->end_time) ? $firstBreakRequest->end_time : $firstBreakRequest->end_time->format('H:i')) : '';
-            $data['break1Notes'] = $firstBreakRequest->notes ?? '';
+            $data['break1Notes'] = '';
         } elseif ($hasPendingRequest && $pendingAttendanceRequest && $pendingAttendanceRequest->break_info) {
             $firstBreakInfo = $pendingAttendanceRequest->break_info[0] ?? null;
             if ($firstBreakInfo) {
@@ -454,7 +463,7 @@ class UserController extends Controller
             $firstBreak = $attendance->breakTimes->first();
             $data['break1StartTime'] = $firstBreak->start_time ? $firstBreak->start_time->format('H:i') : '';
             $data['break1EndTime'] = $firstBreak->end_time ? $firstBreak->end_time->format('H:i') : '';
-            $data['break1Notes'] = $firstBreak->notes ?? '';
+            $data['break1Notes'] = '';
         } else {
             $data['break1StartTime'] = '';
             $data['break1EndTime'] = '';
@@ -466,7 +475,7 @@ class UserController extends Controller
             $secondBreakRequest = $pendingBreakRequests->get(1);
             $data['break2StartTime'] = $secondBreakRequest->start_time ? (is_string($secondBreakRequest->start_time) ? $secondBreakRequest->start_time : $secondBreakRequest->start_time->format('H:i')) : '';
             $data['break2EndTime'] = $secondBreakRequest->end_time ? (is_string($secondBreakRequest->end_time) ? $secondBreakRequest->end_time : $secondBreakRequest->end_time->format('H:i')) : '';
-            $data['break2Notes'] = $secondBreakRequest->notes ?? '';
+            $data['break2Notes'] = '';
         } elseif ($hasPendingRequest && $pendingAttendanceRequest && $pendingAttendanceRequest->break_info && count($pendingAttendanceRequest->break_info) > 1) {
             $secondBreakInfo = $pendingAttendanceRequest->break_info[1] ?? null;
             if ($secondBreakInfo) {
@@ -486,7 +495,7 @@ class UserController extends Controller
             $secondBreak = $attendance->breakTimes->get(1);
             $data['break2StartTime'] = $secondBreak->start_time ? $secondBreak->start_time->format('H:i') : '';
             $data['break2EndTime'] = $secondBreak->end_time ? $secondBreak->end_time->format('H:i') : '';
-            $data['break2Notes'] = $secondBreak->notes ?? '';
+            $data['break2Notes'] = '';
         } else {
             $data['break2StartTime'] = '';
             $data['break2EndTime'] = '';
@@ -539,8 +548,9 @@ class UserController extends Controller
      */
     public function attendanceUpdate(AttendanceUpdateRequest $request, $id)
     {
+        /** @var User $user */
+        $user = Auth::user();
         try {
-            $user = Auth::user();
             $attendance = $user->attendances()->findOrFail($id);
 
             // 既に保留中の申請があるかチェック
@@ -650,6 +660,7 @@ class UserController extends Controller
      */
     public function attendanceStore(AttendanceStoreRequest $request)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         // 指定された日付で既に勤怠記録が存在するかチェック
@@ -719,6 +730,7 @@ class UserController extends Controller
      */
     public function attendanceRequests(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
         $requests = $user->attendanceRequests()
             ->orderBy('created_at', 'desc')
@@ -732,6 +744,7 @@ class UserController extends Controller
      */
     public function stampCorrectionRequests(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
         $status = $request->get('status', 'pending');
 
@@ -794,112 +807,5 @@ class UserController extends Controller
         );
 
         return view('stamp_correction_request.list', compact('paginator', 'status', 'pendingCount', 'approvedCount'));
-    }
-
-    /**
-     * 休憩申請一覧を表示
-     */
-    public function breakRequests(Request $request)
-    {
-        $user = Auth::user();
-        $requests = $user->breakRequests()
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
-
-        return view('attendance.break-requests', compact('requests'));
-    }
-
-    /**
-     * 休憩修正申請を作成
-     */
-    public function breakUpdate(Request $request, $id)
-    {
-        $user = Auth::user();
-        $break = Breaktime::with('attendance')->findOrFail($id);
-
-        // 自分の勤怠記録の休憩かチェック
-        if ($break->attendance->user_id !== $user->id) {
-            abort(403, 'アクセス権限がありません。');
-        }
-
-        // 既に保留中の申請があるかチェック
-        $existingRequest = $user->breakRequests()
-            ->where('break_id', $id)
-            ->where('status', 'pending')
-            ->first();
-
-        if ($existingRequest) {
-            return back()->withErrors(['general' => '既に保留中の申請があります。']);
-        }
-
-        $request->validate([
-            'start_time' => 'required|regex:/^[0-9]{1,2}:[0-9]{2}$/',
-            'end_time' => 'nullable|regex:/^[0-9]{1,2}:[0-9]{2}$/',
-            'notes' => 'nullable|string|max:500',
-        ]);
-
-        $requestData = [
-            'user_id' => $user->id,
-            'break_id' => $id,
-            'attendance_id' => $break->attendance_id,
-            'target_date' => $break->attendance->created_at->format('Y-m-d'),
-            'request_type' => 'update',
-            'status' => 'pending',
-            'start_time' => $request->start_time . ':00',
-            'end_time' => $request->end_time ? $request->end_time . ':00' : null,
-            'notes' => $request->notes,
-        ];
-
-        BreakRequest::create($requestData);
-
-        return redirect()->route('user.attendance.list');
-    }
-
-    /**
-     * 休憩新規作成申請を作成
-     */
-    public function breakStore(Request $request)
-    {
-        $user = Auth::user();
-
-        $request->validate([
-            'attendance_id' => 'required|exists:attendances,id',
-            'start_time' => 'required|regex:/^[0-9]{1,2}:[0-9]{2}$/',
-            'end_time' => 'nullable|regex:/^[0-9]{1,2}:[0-9]{2}$/',
-            'notes' => 'nullable|string|max:500',
-        ]);
-
-        $attendance = Attendance::findOrFail($request->attendance_id);
-
-        // 自分の勤怠記録かチェック
-        if ($attendance->user_id !== $user->id) {
-            abort(403, 'アクセス権限がありません。');
-        }
-
-        // 既に保留中の申請があるかチェック
-        $existingRequest = $user->breakRequests()
-            ->where('attendance_id', $request->attendance_id)
-            ->where('status', 'pending')
-            ->first();
-
-        if ($existingRequest) {
-            return back()->withErrors(['general' => '既に保留中の申請があります。']);
-        }
-
-        $requestData = [
-            'user_id' => $user->id,
-            'break_id' => null,
-            'attendance_id' => $request->attendance_id,
-            'target_date' => $attendance->created_at->format('Y-m-d'),
-            'request_type' => 'create',
-            'status' => 'pending',
-            'start_time' => $request->start_time . ':00',
-            'end_time' => $request->end_time ? $request->end_time . ':00' : null,
-            'notes' => $request->notes,
-        ];
-
-        BreakRequest::create($requestData);
-
-        return redirect()->route('user.attendance.list');
     }
 }

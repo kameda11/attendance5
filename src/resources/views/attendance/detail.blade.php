@@ -78,9 +78,7 @@
                                     <span class="pending-break-separator"> ～ </span>
                                     <span class="pending-break-end-time">{{ $displayData['break1EndTime'] }}</span>
                                 </span>
-                                @if($displayData['break1Notes'])
-                                <span class="pending-break-notes">({{ $displayData['break1Notes'] }})</span>
-                                @endif
+
                             </div>
                             @endif
                             @else
@@ -107,9 +105,7 @@
                                     <span class="pending-break-separator"> ～ </span>
                                     <span class="pending-break-end-time">{{ $displayData['break2EndTime'] }}</span>
                                 </span>
-                                @if($displayData['break2Notes'])
-                                <span class="pending-break-notes">({{ $displayData['break2Notes'] }})</span>
-                                @endif
+
                             </div>
                             @endif
                             @else
@@ -133,7 +129,7 @@
                                 {{ $displayData['notes'] }}
                             </div>
                             @else
-                            <textarea name="notes" class="notes-textarea" rows="4" cols="50">{{ old('notes', $displayData['notes']) }}</textarea>
+                            <textarea name="notes" class="notes-textarea" rows="4" cols="50" required>{{ old('notes', $displayData['notes']) }}</textarea>
                             @endif
                         </td>
                     </tr>

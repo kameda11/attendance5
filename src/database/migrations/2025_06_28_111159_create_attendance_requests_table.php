@@ -23,7 +23,7 @@ class CreateAttendanceRequestsTable extends Migration
 
             $table->time('clock_in_time')->nullable();
             $table->time('clock_out_time')->nullable();
-            $table->text('notes')->nullable();
+            $table->text('notes');
 
             $table->timestamps();
 

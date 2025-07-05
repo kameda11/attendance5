@@ -34,18 +34,18 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/admin/requests', [AdminController::class, 'requests'])->name('admin.requests');
     Route::get('/admin/attendances', [AdminController::class, 'attendances'])->name('admin.attendances');
-    Route::get('/admin/attendance/detail/{id}', [AdminController::class, 'attendanceDetail'])->name('admin.attendance.detail');
+    Route::get('/admin/attendance/{id}', [AdminController::class, 'attendanceDetail'])->name('admin.attendance.detail');
     Route::put('/admin/attendance/update/{id}', [AdminController::class, 'attendanceUpdate'])->name('admin.attendance.update');
     Route::post('/admin/attendance/store', [AdminController::class, 'attendanceStore'])->name('admin.attendance.store');
 
     // 申請関連
-    Route::get('/admin/attendance/requests', [AdminController::class, 'attendanceRequests'])->name('admin.attendance.requests');
-    Route::get('/admin/attendance/request/detail/{id}', [AdminController::class, 'attendanceRequestDetail'])->name('admin.attendance.request.detail');
-    Route::get('/admin/attendance/request/approval/{id}', [AdminController::class, 'showApprovalPage'])->name('admin.attendance.request.approval');
-    Route::post('/admin/attendance/request/approve/{id}', [AdminController::class, 'approveRequest'])->name('admin.attendance.request.approve');
+    Route::get('/admin/requests', [AdminController::class, 'attendanceRequests'])->name('admin.attendance.requests');
+    Route::get('/admin/request/{id}/detail', [AdminController::class, 'attendanceRequestDetail'])->name('admin.attendance.request.detail');
+    Route::get('/admin/requests/{id}', [AdminController::class, 'showApprovalPage'])->name('admin.attendance.request.approval');
+    Route::post('/admin/requests/{id}', [AdminController::class, 'approveRequest'])->name('admin.attendance.request.approve');
 
     // スタッフ別勤怠一覧
-    Route::get('/admin/user/{userId}/attendance/list', [AdminController::class, 'userAttendanceList'])->name('admin.user.attendance.list');
+    Route::get('/admin/user/{userId}/attendances', [AdminController::class, 'userAttendanceList'])->name('admin.user.attendance.list');
 });
 
 // メール認証関連のルート

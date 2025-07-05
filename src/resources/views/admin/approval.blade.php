@@ -76,9 +76,7 @@
                                 <span class="time-separator">～</span>
                                 <span class="time-end">{{ $firstBreak->end_time ? \Carbon\Carbon::parse($firstBreak->end_time)->format('H:i') : '' }}</span>
                             </div>
-                            @if($firstBreak->notes)
-                            <span class="break-notes">({{ $firstBreak->notes }})</span>
-                            @endif
+
                         </div>
                         @else
                         <span class="no-data"></span>
@@ -105,9 +103,7 @@
                                 <span class="time-separator">～</span>
                                 <span class="time-end">{{ $secondBreak->end_time ? \Carbon\Carbon::parse($secondBreak->end_time)->format('H:i') : '' }}</span>
                             </div>
-                            @if($secondBreak->notes)
-                            <span class="break-notes">({{ $secondBreak->notes }})</span>
-                            @endif
+
                         </div>
                         @else
                         <span class="no-data"></span>

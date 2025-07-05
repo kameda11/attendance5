@@ -15,7 +15,6 @@ class Breaktime extends Model
         'attendance_id',
         'start_time',
         'end_time',
-        'notes',
     ];
 
     protected $casts = [

@@ -75,9 +75,7 @@
                                     {{ $firstBreakRequest->start_time ? $firstBreakRequest->start_time->format('H:i') : '' }} ~
                                     {{ $firstBreakRequest->end_time ? $firstBreakRequest->end_time->format('H:i') : '' }}
                                 </span>
-                                @if($firstBreakRequest->notes)
-                                <span class="break-notes">({{ $firstBreakRequest->notes }})</span>
-                                @endif
+
                             </div>
                             @elseif($attendance && $attendance->breakTimes->count() > 0)
                             @php $firstBreak = $attendance->breakTimes->first(); @endphp
@@ -86,9 +84,7 @@
                                     {{ $firstBreak->start_time ? $firstBreak->start_time->format('H:i') : '' }} ~
                                     {{ $firstBreak->end_time ? $firstBreak->end_time->format('H:i') : '' }}
                                 </span>
-                                @if($firstBreak->notes)
-                                <span class="break-notes">({{ $firstBreak->notes }})</span>
-                                @endif
+
                             </div>
                             @else
                             <div class="time-inputs">
@@ -113,9 +109,7 @@
                                     {{ $secondBreakRequest->start_time ? $secondBreakRequest->start_time->format('H:i') : '' }} ~
                                     {{ $secondBreakRequest->end_time ? $secondBreakRequest->end_time->format('H:i') : '' }}
                                 </span>
-                                @if($secondBreakRequest->notes)
-                                <span class="break-notes">({{ $secondBreakRequest->notes }})</span>
-                                @endif
+
                             </div>
                             @elseif($attendance && $attendance->breakTimes->count() > 1)
                             @php $secondBreak = $attendance->breakTimes->get(1); @endphp
@@ -124,9 +118,7 @@
                                     {{ $secondBreak->start_time ? $secondBreak->start_time->format('H:i') : '' }} ~
                                     {{ $secondBreak->end_time ? $secondBreak->end_time->format('H:i') : '' }}
                                 </span>
-                                @if($secondBreak->notes)
-                                <span class="break-notes">({{ $secondBreak->notes }})</span>
-                                @endif
+
                             </div>
                             @else
                             <div class="time-inputs">
@@ -144,7 +136,7 @@
                     <tr>
                         <th>備考</th>
                         <td>
-                            <textarea name="notes" class="notes-textbox" rows="4" cols="50">{{ old('notes', $attendanceRequest && $attendanceRequest->notes ? $attendanceRequest->notes : ($attendance ? ($attendance->notes ?? '') : '')) }}</textarea>
+                            <textarea name="notes" class="notes-textbox" rows="4" cols="50" required>{{ old('notes', $attendanceRequest && $attendanceRequest->notes ? $attendanceRequest->notes : ($attendance ? ($attendance->notes ?? '') : '')) }}</textarea>
                         </td>
                     </tr>
                 </tbody>

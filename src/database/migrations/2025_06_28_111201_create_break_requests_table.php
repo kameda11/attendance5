@@ -20,11 +20,10 @@ class CreateBreakRequestsTable extends Migration
             $table->foreignId('attendance_id')->constrained()->onDelete('cascade');
             $table->date('target_date');
             $table->enum('request_type', ['create', 'update']);
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved'])->default('pending');
 
             $table->time('start_time');
             $table->time('end_time')->nullable();
-            $table->text('notes')->nullable();
 
             $table->timestamps();
 

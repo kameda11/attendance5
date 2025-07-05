@@ -1,17 +1,15 @@
 <?php
-//新規勤怠記録の作成申請用
+//既存勤怠記録の修正申請用
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AttendanceStoreRequest extends FormRequest
+class AttendanceUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -19,9 +17,9 @@ class AttendanceStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, mixed>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'clock_in_time' => 'nullable|regex:/^[0-9]{1,2}:[0-9]{2}$/',
@@ -30,8 +28,8 @@ class AttendanceStoreRequest extends FormRequest
             'break1_end_time' => 'nullable|regex:/^[0-9]{1,2}:[0-9]{2}$/',
             'break2_start_time' => 'nullable|regex:/^[0-9]{1,2}:[0-9]{2}$/',
             'break2_end_time' => 'nullable|regex:/^[0-9]{1,2}:[0-9]{2}$/',
+            'notes' => 'required|string|max:255',
             'date' => 'required|date',
-            'notes' => 'required|string|max:500',
         ];
     }
 
@@ -95,7 +93,7 @@ class AttendanceStoreRequest extends FormRequest
         if ($break1Start) {
             $break1StartTime = \Carbon\Carbon::createFromFormat('H:i', $break1Start);
             if ($break1StartTime->greaterThanOrEqualTo($outTime)) {
-                $validator->errors()->add('break1_start_time', '休憩時間が不適切な値です。');
+                $validator->errors()->add('break1_start_time', '休憩時間が不適切な値です');
             }
         }
 
@@ -104,7 +102,7 @@ class AttendanceStoreRequest extends FormRequest
         if ($break1End) {
             $break1EndTime = \Carbon\Carbon::createFromFormat('H:i', $break1End);
             if ($break1EndTime->greaterThanOrEqualTo($outTime)) {
-                $validator->errors()->add('break1_end_time', '出勤時間もしくは退勤時間が不適切な値です。');
+                $validator->errors()->add('break1_end_time', '出勤時間もしくは退勤時間が不適切な値です');
             }
         }
 
@@ -113,7 +111,7 @@ class AttendanceStoreRequest extends FormRequest
         if ($break2Start) {
             $break2StartTime = \Carbon\Carbon::createFromFormat('H:i', $break2Start);
             if ($break2StartTime->greaterThanOrEqualTo($outTime)) {
-                $validator->errors()->add('break2_start_time', '休憩時間が不適切な値です。');
+                $validator->errors()->add('break2_start_time', '休憩時間が不適切な値です');
             }
         }
 
@@ -122,7 +120,7 @@ class AttendanceStoreRequest extends FormRequest
         if ($break2End) {
             $break2EndTime = \Carbon\Carbon::createFromFormat('H:i', $break2End);
             if ($break2EndTime->greaterThanOrEqualTo($outTime)) {
-                $validator->errors()->add('break2_end_time', '出勤時間もしくは退勤時間が不適切な値です。');
+                $validator->errors()->add('break2_end_time', '出勤時間もしくは退勤時間が不適切な値です');
             }
         }
     }
@@ -132,19 +130,38 @@ class AttendanceStoreRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         return [
-            'clock_in_time.regex' => '出勤時間は HH:MM 形式で入力してください。',
-            'clock_out_time.regex' => '退勤時間は HH:MM 形式で入力してください。',
-            'break1_start_time.regex' => '休憩1開始時間は HH:MM 形式で入力してください。',
-            'break1_end_time.regex' => '休憩1終了時間は HH:MM 形式で入力してください。',
-            'break2_start_time.regex' => '休憩2開始時間は HH:MM 形式で入力してください。',
-            'break2_end_time.regex' => '休憩2終了時間は HH:MM 形式で入力してください。',
-            'date.required' => '日付は必須です。',
-            'date.date' => '有効な日付を入力してください。',
-            'notes.required' => '備考を入力してください。',
-            'notes.max' => '申請理由・備考は500文字以内で入力してください。',
+            'clock_in_time.regex' => '出勤時間は HH:MM 形式で入力してください',
+            'clock_out_time.regex' => '退勤時間は HH:MM 形式で入力してください',
+            'break1_start_time.regex' => '休憩開始時間は HH:MM 形式で入力してください',
+            'break1_end_time.regex' => '休憩終了時間は HH:MM 形式で入力してください',
+            'break2_start_time.regex' => '休憩2開始時間は HH:MM 形式で入力してください',
+            'break2_end_time.regex' => '休憩2終了時間は HH:MM 形式で入力してください',
+            'notes.required' => '備考を入力してください',
+            'notes.max' => '備考は255文字以内で入力してください',
+            'date.required' => '日付を入力してください',
+            'date.date' => '有効な日付を入力してください',
+        ];
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array
+     */
+    public function attributes(): array
+    {
+        return [
+            'clock_in_time' => '出勤時間',
+            'clock_out_time' => '退勤時間',
+            'break1_start_time' => '休憩1開始時間',
+            'break1_end_time' => '休憩1終了時間',
+            'break2_start_time' => '休憩2開始時間',
+            'break2_end_time' => '休憩2終了時間',
+            'notes' => '備考',
+            'date' => '日付',
         ];
     }
 }
