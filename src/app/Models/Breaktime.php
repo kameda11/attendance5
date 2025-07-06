@@ -30,6 +30,11 @@ class Breaktime extends Model
         return $this->belongsTo(Attendance::class);
     }
 
+    public function breakRequests()
+    {
+        return $this->hasMany(BreakRequest::class);
+    }
+
     /**
      * 休憩時間を分で取得
      */

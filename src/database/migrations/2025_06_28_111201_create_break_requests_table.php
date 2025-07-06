@@ -17,7 +17,6 @@ class CreateBreakRequestsTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('break_id')->nullable()->constrained()->onDelete('cascade');
-            $table->foreignId('attendance_id')->constrained()->onDelete('cascade');
             $table->date('target_date');
             $table->enum('request_type', ['create', 'update']);
             $table->enum('status', ['pending', 'approved'])->default('pending');

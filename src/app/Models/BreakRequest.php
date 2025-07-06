@@ -12,13 +12,11 @@ class BreakRequest extends Model
     protected $fillable = [
         'user_id',
         'break_id',
-        'attendance_id',
         'target_date',
         'request_type',
         'status',
         'start_time',
         'end_time',
-        'notes',
     ];
 
     protected $casts = [
@@ -44,11 +42,18 @@ class BreakRequest extends Model
     }
 
     /**
-     * 勤怠記録とのリレーション
+     * 勤怠記録を取得（break_idから間接的に取得）
      */
     public function attendance()
     {
-        return $this->belongsTo(Attendance::class);
+        if ($this->break_id) {
+            return $this->break->attendance;
+        }
+
+        // break_idがnullの場合（新規作成時）は、user_idとtarget_dateから取得
+        return $this->user->attendances()
+            ->whereDate('created_at', $this->target_date)
+            ->first();
     }
 
     /**
@@ -65,14 +70,6 @@ class BreakRequest extends Model
     public function isApproved()
     {
         return $this->status === 'approved';
-    }
-
-    /**
-     * 申請が却下済みかチェック
-     */
-    public function isRejected()
-    {
-        return $this->status === 'rejected';
     }
 
     /**
