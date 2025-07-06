@@ -55,6 +55,44 @@
     font-weight: bold;
 }
 
+.date-selector {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.date-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.calendar-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.calendar-icon {
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+}
+
 .arrow-left,
 .arrow-right {
     width: 20px;

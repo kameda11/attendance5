@@ -17,19 +17,11 @@
             </a>
 
             <div class="current-date">
-                <div class="month-selector">
-                    <select id="monthSelect" onchange="changeMonth()">
-                        @for($year = 2020; $year <= 2030; $year++)
-                            <optgroup label="{{ $year }}年">
-                            @for($month = 1; $month <= 12; $month++)
-                                <option value="{{ $year }}/{{ $month }}"
-                                {{ $currentMonth->year == $year && $currentMonth->month == $month ? 'selected' : '' }}>
-                                {{ $month }}月
-                                </option>
-                                @endfor
-                                </optgroup>
-                                @endfor
-                    </select>
+                <div class="date-selector">
+                    <input type="month" id="monthSelector" value="{{ $currentMonth->format('Y-m') }}" class="month-input">
+                    <label for="monthSelector" class="calendar-button">
+                        <img src="{{ asset('storage/app/public/calendar.png') }}" alt="カレンダー" class="calendar-icon">
+                    </label>
                 </div>
                 <h2>{{ $currentMonth->format('Y/m') }}</h2>
             </div>
@@ -99,10 +91,19 @@
 
 @section('script')
 <script>
-    function changeMonth() {
-        const select = document.getElementById('monthSelect');
-        const [year, month] = select.value.split('/');
-        window.location.href = `{{ route('user.attendance.list') }}?year=${year}&month=${month}`;
-    }
+document.getElementById('monthSelector').addEventListener('change', function() {
+    const selectedMonth = this.value;
+    const [year, month] = selectedMonth.split('-');
+    const currentUrl = new URL(window.location);
+    currentUrl.searchParams.set('year', year);
+    currentUrl.searchParams.set('month', month);
+    window.location.href = currentUrl.toString();
+});
+
+// カレンダーアイコンをクリックしたときにmonth pickerを開く
+document.querySelector('.calendar-button').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('monthSelector').showPicker();
+});
 </script>
 @endsection

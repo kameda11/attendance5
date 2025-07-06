@@ -18,6 +18,12 @@
             </a>
 
             <div class="current-date">
+                <div class="date-selector">
+                    <input type="date" id="dateSelector" value="{{ $selectedDate->format('Y-m-d') }}" class="date-input">
+                    <label for="dateSelector" class="calendar-button">
+                        <img src="{{ asset('storage/app/public/calendar.png') }}" alt="カレンダー" class="calendar-icon">
+                    </label>
+                </div>
                 <h2>{{ $selectedDate->format('Y/m/d') }}</h2>
             </div>
             <a href="{{ route('admin.attendances', ['date' => $nextDate->format('Y-m-d')]) }}" class="nav-button next">
@@ -72,4 +78,19 @@
         </div>
     </main>
 </div>
+
+<script>
+    document.getElementById('dateSelector').addEventListener('change', function() {
+        const selectedDate = this.value;
+        const currentUrl = new URL(window.location);
+        currentUrl.searchParams.set('date', selectedDate);
+        window.location.href = currentUrl.toString();
+    });
+
+    // カレンダーアイコンをクリックしたときにdate pickerを開く
+    document.querySelector('.calendar-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('dateSelector').showPicker();
+    });
+</script>
 @endsection
