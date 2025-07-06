@@ -132,7 +132,7 @@ class AdminController extends Controller
         $nextDate = $selectedDate->copy()->addDay();
 
         // その日の全ユーザーの勤怠データを取得
-        $attendances = Attendance::with(['user', 'breakTimes'])
+        $attendances = Attendance::with(['user', 'breaks'])
             ->where(function ($query) use ($selectedDate) {
                 $query->whereDate('created_at', $selectedDate)
                     ->orWhereDate('clock_in_time', $selectedDate)
@@ -151,9 +151,9 @@ class AdminController extends Controller
 
             // 休憩時間を計算
             $breakTime = '';
-            if ($attendance && $attendance->breakTimes->isNotEmpty()) {
+            if ($attendance && $attendance->breaks->isNotEmpty()) {
                 $totalBreakMinutes = 0;
-                foreach ($attendance->breakTimes as $break) {
+                foreach ($attendance->breaks as $break) {
                     if ($break->start_time && $break->end_time) {
                         $totalBreakMinutes += $break->start_time->diffInMinutes($break->end_time);
                     }
@@ -171,9 +171,9 @@ class AdminController extends Controller
                 $totalMinutes = $clockOut->diffInMinutes($clockIn);
 
                 // 休憩時間を差し引く
-                if ($attendance->breakTimes->isNotEmpty()) {
+                if ($attendance->breaks->isNotEmpty()) {
                     $totalBreakMinutes = 0;
-                    foreach ($attendance->breakTimes as $break) {
+                    foreach ($attendance->breaks as $break) {
                         if ($break->start_time && $break->end_time) {
                             $totalBreakMinutes += $break->start_time->diffInMinutes($break->end_time);
                         }
@@ -276,7 +276,7 @@ class AdminController extends Controller
             ]);
         }
 
-        $attendance = Attendance::with(['breakTimes'])->find($id);
+        $attendance = Attendance::with(['breaks'])->find($id);
 
         if (!$attendance) {
             abort(404, '勤怠データが見つかりません');
@@ -324,10 +324,18 @@ class AdminController extends Controller
 
         // 時間データの処理
         if ($validated['clock_in_time'] ?? null) {
-            $updateData['clock_in_time'] = $date . ' ' . $validated['clock_in_time'] . ':00';
+            // 既に完全な日時文字列の場合はそのまま使用、そうでなければ日付と結合
+            $clockInTime = strpos($validated['clock_in_time'], ' ') !== false
+                ? $validated['clock_in_time']
+                : $date . ' ' . $validated['clock_in_time'] . ':00';
+            $updateData['clock_in_time'] = $clockInTime;
         }
         if ($validated['clock_out_time'] ?? null) {
-            $updateData['clock_out_time'] = $date . ' ' . $validated['clock_out_time'] . ':00';
+            // 既に完全な日時文字列の場合はそのまま使用、そうでなければ日付と結合
+            $clockOutTime = strpos($validated['clock_out_time'], ' ') !== false
+                ? $validated['clock_out_time']
+                : $date . ' ' . $validated['clock_out_time'] . ':00';
+            $updateData['clock_out_time'] = $clockOutTime;
         }
 
         $attendance->update($updateData);
@@ -358,10 +366,18 @@ class AdminController extends Controller
 
         // 時間データの処理
         if ($validated['clock_in_time'] ?? null) {
-            $createData['clock_in_time'] = $date . ' ' . $validated['clock_in_time'] . ':00';
+            // 既に完全な日時文字列の場合はそのまま使用、そうでなければ日付と結合
+            $clockInTime = strpos($validated['clock_in_time'], ' ') !== false
+                ? $validated['clock_in_time']
+                : $date . ' ' . $validated['clock_in_time'] . ':00';
+            $createData['clock_in_time'] = $clockInTime;
         }
         if ($validated['clock_out_time'] ?? null) {
-            $createData['clock_out_time'] = $date . ' ' . $validated['clock_out_time'] . ':00';
+            // 既に完全な日時文字列の場合はそのまま使用、そうでなければ日付と結合
+            $clockOutTime = strpos($validated['clock_out_time'], ' ') !== false
+                ? $validated['clock_out_time']
+                : $date . ' ' . $validated['clock_out_time'] . ':00';
+            $createData['clock_out_time'] = $clockOutTime;
         }
 
         $attendance = Attendance::create($createData);
@@ -495,7 +511,7 @@ class AdminController extends Controller
         $nextMonth = $currentMonth->copy()->addMonth();
 
         // その月の勤怠データを取得
-        $attendances = Attendance::with(['breakTimes'])
+        $attendances = Attendance::with(['breaks'])
             ->where('user_id', $userId)
             ->where(function ($query) use ($year, $month) {
                 $query->where(function ($q) use ($year, $month) {
@@ -532,9 +548,9 @@ class AdminController extends Controller
 
             // 休憩時間を計算
             $breakTime = '';
-            if ($attendance && $attendance->breakTimes->isNotEmpty()) {
+            if ($attendance && $attendance->breaks->isNotEmpty()) {
                 $totalBreakMinutes = 0;
-                foreach ($attendance->breakTimes as $break) {
+                foreach ($attendance->breaks as $break) {
                     if ($break->start_time && $break->end_time) {
                         $totalBreakMinutes += $break->start_time->diffInMinutes($break->end_time);
                     }
@@ -552,9 +568,9 @@ class AdminController extends Controller
                 $totalMinutes = $clockOut->diffInMinutes($clockIn);
 
                 // 休憩時間を差し引く
-                if ($attendance->breakTimes->isNotEmpty()) {
+                if ($attendance->breaks->isNotEmpty()) {
                     $totalBreakMinutes = 0;
-                    foreach ($attendance->breakTimes as $break) {
+                    foreach ($attendance->breaks as $break) {
                         if ($break->start_time && $break->end_time) {
                             $totalBreakMinutes += $break->start_time->diffInMinutes($break->end_time);
                         }
@@ -600,7 +616,7 @@ class AdminController extends Controller
         $date = $attendance->created_at->format('Y-m-d');
 
         // 既存の休憩時間を削除
-        $attendance->breakTimes()->delete();
+        $attendance->breaks()->delete();
 
         // 休憩1の処理
         if ($request->break1_start_time) {
@@ -633,7 +649,7 @@ class AdminController extends Controller
     private function updateBreakTimesWithDate($attendance, $request, $date)
     {
         // 既存の休憩時間を削除
-        $attendance->breakTimes()->delete();
+        $attendance->breaks()->delete();
 
         // 休憩1の処理
         if ($request->break1_start_time) {

@@ -68,7 +68,7 @@ class AttendanceUpdateRequest extends FormRequest
         }
 
         // 休憩時間の妥当性をチェック
-        $this->validateBreakTimes($validator, $clockInTime, $clockOutTime);
+        $this->validateBreaks($validator, $clockInTime, $clockOutTime);
     }
 
     /**
@@ -79,7 +79,7 @@ class AttendanceUpdateRequest extends FormRequest
      * @param  string|null  $clockOutTime
      * @return void
      */
-    private function validateBreakTimes($validator, $clockInTime, $clockOutTime)
+    private function validateBreaks($validator, $clockInTime, $clockOutTime)
     {
         // 退勤時間が入力されている場合のみチェック
         if (!$clockOutTime) {

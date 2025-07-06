@@ -77,8 +77,8 @@
                                 </span>
 
                             </div>
-                            @elseif($attendance && $attendance->breakTimes->count() > 0)
-                            @php $firstBreak = $attendance->breakTimes->first(); @endphp
+                            @elseif($attendance && $attendance->breaks->count() > 0)
+                            @php $firstBreak = $attendance->breaks->first(); @endphp
                             <div class="break-item">
                                 <span class="break-time">
                                     {{ $firstBreak->start_time ? $firstBreak->start_time->format('H:i') : '' }} ~
@@ -111,8 +111,8 @@
                                 </span>
 
                             </div>
-                            @elseif($attendance && $attendance->breakTimes->count() > 1)
-                            @php $secondBreak = $attendance->breakTimes->get(1); @endphp
+                            @elseif($attendance && $attendance->breaks->count() > 1)
+                            @php $secondBreak = $attendance->breaks->get(1); @endphp
                             <div class="break-item">
                                 <span class="break-time">
                                     {{ $secondBreak->start_time ? $secondBreak->start_time->format('H:i') : '' }} ~

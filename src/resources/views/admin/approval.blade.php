@@ -68,8 +68,8 @@
                                 <span class="time-end">{{ $firstBreak['end_time'] ?? '' }}</span>
                             </div>
                         </div>
-                        @elseif($request->attendance && $request->attendance->breakTimes->count() > 0)
-                        @php $firstBreak = $request->attendance->breakTimes->first(); @endphp
+                        @elseif($request->attendance && $request->attendance->breaks->count() > 0)
+                        @php $firstBreak = $request->attendance->breaks->first(); @endphp
                         <div class="break-item">
                             <div class="break-time">
                                 <span class="time-start">{{ $firstBreak->start_time ? \Carbon\Carbon::parse($firstBreak->start_time)->format('H:i') : '' }}</span>
@@ -95,8 +95,8 @@
                                 <span class="time-end">{{ $secondBreak['end_time'] ?? '' }}</span>
                             </div>
                         </div>
-                        @elseif($request->attendance && $request->attendance->breakTimes->count() > 1)
-                        @php $secondBreak = $request->attendance->breakTimes->get(1); @endphp
+                        @elseif($request->attendance && $request->attendance->breaks->count() > 1)
+                        @php $secondBreak = $request->attendance->breaks->get(1); @endphp
                         <div class="break-item">
                             <div class="break-time">
                                 <span class="time-start">{{ $secondBreak->start_time ? \Carbon\Carbon::parse($secondBreak->start_time)->format('H:i') : '' }}</span>

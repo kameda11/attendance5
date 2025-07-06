@@ -23,12 +23,12 @@ class UserController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $todayAttendance = $user->attendances()
-            ->with('breakTimes')
+            ->with('breaks')
             ->whereDate('created_at', today())
             ->first();
 
         $recentAttendances = $user->attendances()
-            ->with('breakTimes')
+            ->with('breaks')
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get();
@@ -128,7 +128,7 @@ class UserController extends Controller
         }
 
         // 新しい休憩記録を作成
-        $break = $attendance->breakTimes()->create([
+        $break = $attendance->breaks()->create([
             'start_time' => now(),
         ]);
 
@@ -153,7 +153,7 @@ class UserController extends Controller
 
         // 今日の最新の勤務記録を取得（退勤済みでないもの）
         $attendance = $user->attendances()
-            ->with('breakTimes')
+            ->with('breaks')
             ->whereDate('created_at', today())
             ->where('status', '!=', 'completed')
             ->latest()
@@ -172,7 +172,7 @@ class UserController extends Controller
         }
 
         // 最新の未終了の休憩を取得
-        $activeBreak = $attendance->breakTimes()
+        $activeBreak = $attendance->breaks()
             ->whereNull('end_time')
             ->latest()
             ->first();
@@ -201,7 +201,7 @@ class UserController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $attendances = $user->attendances()
-            ->with('breakTimes')
+            ->with('breaks')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
@@ -230,12 +230,25 @@ class UserController extends Controller
 
         // その月の勤怠データを取得
         $attendances = $user->attendances()
-            ->with('breakTimes')
+            ->with('breaks')
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->get()
             ->keyBy(function ($attendance) {
                 return $attendance->created_at->format('Y-m-d');
             });
+
+        // その月の申請データを取得
+        $attendanceRequests = $user->attendanceRequests()
+            ->where('status', 'pending')
+            ->whereBetween('target_date', [$startOfMonth->format('Y-m-d'), $endOfMonth->format('Y-m-d')])
+            ->get()
+            ->keyBy('target_date');
+
+        $breakRequests = $user->breakRequests()
+            ->where('status', 'pending')
+            ->whereBetween('target_date', [$startOfMonth->format('Y-m-d'), $endOfMonth->format('Y-m-d')])
+            ->get()
+            ->groupBy('target_date');
 
         // カレンダー配列を作成
         $calendar = [];
@@ -244,18 +257,34 @@ class UserController extends Controller
         while ($currentDate <= $endOfMonth) {
             $dateKey = $currentDate->format('Y-m-d');
             $attendance = $attendances->get($dateKey);
+            $attendanceRequest = $attendanceRequests->get($dateKey);
+            $dateBreakRequests = $breakRequests->get($dateKey, collect());
 
             // 勤務時間と休憩時間の計算
             $workTime = '';
             $breakTime = '';
+            $hasPendingRequest = false;
 
-            if ($attendance) {
-                if ($attendance->clock_in_time && $attendance->clock_out_time) {
-                    $workTime = $this->calculateWorkTime($attendance->clock_in_time, $attendance->clock_out_time, $attendance->breakTimes);
+            if ($attendanceRequest) {
+                // 申請中のデータがある場合
+                $hasPendingRequest = true;
+
+                if ($attendanceRequest->clock_in_time && $attendanceRequest->clock_out_time) {
+                    $workTime = $this->calculateWorkTime($attendanceRequest->clock_in_time, $attendanceRequest->clock_out_time, []);
                 }
 
-                if ($attendance->breakTimes->isNotEmpty()) {
-                    $breakTime = $this->calculateBreakTime($attendance->breakTimes);
+                // 申請中の休憩データを処理
+                if ($attendanceRequest->break_info) {
+                    $breakTime = $this->calculateBreakTimeFromInfo($attendanceRequest->break_info);
+                }
+            } elseif ($attendance) {
+                // 実際の勤怠記録がある場合
+                if ($attendance->clock_in_time && $attendance->clock_out_time) {
+                    $workTime = $this->calculateWorkTime($attendance->clock_in_time, $attendance->clock_out_time, $attendance->breaks);
+                }
+
+                if ($attendance->breaks->isNotEmpty()) {
+                    $breakTime = $this->calculateBreakTime($attendance->breaks);
                 }
             }
 
@@ -264,6 +293,8 @@ class UserController extends Controller
                 'weekday' => $this->getJapaneseWeekday($currentDate->dayOfWeek),
                 'date' => $currentDate->format('Y-m-d'),
                 'attendance' => $attendance,
+                'attendanceRequest' => $attendanceRequest,
+                'hasPendingRequest' => $hasPendingRequest,
                 'workTime' => $workTime,
                 'breakTime' => $breakTime,
                 'isToday' => $currentDate->isToday(),
@@ -319,6 +350,27 @@ class UserController extends Controller
     }
 
     /**
+     * 申請中の休憩情報から休憩時間を計算
+     */
+    private function calculateBreakTimeFromInfo($breakInfo)
+    {
+        $totalMinutes = 0;
+
+        foreach ($breakInfo as $break) {
+            if (isset($break['start_time']) && isset($break['end_time'])) {
+                $startTime = \Carbon\Carbon::parse($break['start_time']);
+                $endTime = \Carbon\Carbon::parse($break['end_time']);
+                $totalMinutes += $startTime->diffInMinutes($endTime);
+            }
+        }
+
+        $hours = floor($totalMinutes / 60);
+        $minutes = $totalMinutes % 60;
+
+        return sprintf('%d:%02d', $hours, $minutes);
+    }
+
+    /**
      * 日本語の曜日を取得
      */
     private function getJapaneseWeekday($dayOfWeek)
@@ -343,7 +395,7 @@ class UserController extends Controller
                 $workMinutes = $attendance->clock_in_time->diffInMinutes($attendance->clock_out_time);
 
                 // 休憩時間を差し引く
-                foreach ($attendance->breakTimes as $break) {
+                foreach ($attendance->breaks as $break) {
                     if ($break->start_time && $break->end_time) {
                         $breakMinutes = $break->start_time->diffInMinutes($break->end_time);
                         $workMinutes -= $breakMinutes;
@@ -372,7 +424,7 @@ class UserController extends Controller
             $attendance = null;
             $date = request()->get('date', now()->format('Y-m-d'));
         } else {
-            $attendance = $user->attendances()->with(['breakTimes', 'attendanceRequests'])->findOrFail($id);
+            $attendance = $user->attendances()->with(['breaks', 'attendanceRequests'])->findOrFail($id);
             $date = $attendance->created_at->format('Y-m-d');
         }
 
@@ -459,8 +511,8 @@ class UserController extends Controller
             $data['break1StartTime'] = '';
             $data['break1EndTime'] = '';
             $data['break1Notes'] = '';
-        } elseif ($attendance && $attendance->breakTimes->count() > 0) {
-            $firstBreak = $attendance->breakTimes->first();
+        } elseif ($attendance && $attendance->breaks->count() > 0) {
+            $firstBreak = $attendance->breaks->first();
             $data['break1StartTime'] = $firstBreak->start_time ? $firstBreak->start_time->format('H:i') : '';
             $data['break1EndTime'] = $firstBreak->end_time ? $firstBreak->end_time->format('H:i') : '';
             $data['break1Notes'] = '';
@@ -491,8 +543,8 @@ class UserController extends Controller
             $data['break2StartTime'] = '';
             $data['break2EndTime'] = '';
             $data['break2Notes'] = '';
-        } elseif ($attendance && $attendance->breakTimes->count() > 1) {
-            $secondBreak = $attendance->breakTimes->get(1);
+        } elseif ($attendance && $attendance->breaks->count() > 1) {
+            $secondBreak = $attendance->breaks->get(1);
             $data['break2StartTime'] = $secondBreak->start_time ? $secondBreak->start_time->format('H:i') : '';
             $data['break2EndTime'] = $secondBreak->end_time ? $secondBreak->end_time->format('H:i') : '';
             $data['break2Notes'] = '';
@@ -574,10 +626,16 @@ class UserController extends Controller
 
             // 時間データの処理
             if ($request->clock_in_time) {
-                $requestData['clock_in_time'] = $request->clock_in_time . ':00';
+                // 既に完全な日時文字列の場合はそのまま使用、そうでなければ:00を追加
+                $requestData['clock_in_time'] = strpos($request->clock_in_time, ':00') !== false
+                    ? $request->clock_in_time
+                    : $request->clock_in_time . ':00';
             }
             if ($request->clock_out_time) {
-                $requestData['clock_out_time'] = $request->clock_out_time . ':00';
+                // 既に完全な日時文字列の場合はそのまま使用、そうでなければ:00を追加
+                $requestData['clock_out_time'] = strpos($request->clock_out_time, ':00') !== false
+                    ? $request->clock_out_time
+                    : $request->clock_out_time . ':00';
             }
 
             // 勤怠申請を作成
@@ -617,7 +675,7 @@ class UserController extends Controller
         $endTimeField = "break{$breakNumber}_end_time";
 
         // 既存の休憩を取得
-        $existingBreak = $attendance->breakTimes()->skip($breakNumber - 1)->first();
+        $existingBreak = $attendance->breaks()->skip($breakNumber - 1)->first();
 
         $requestData = [
             'user_id' => $user->id,
@@ -693,10 +751,16 @@ class UserController extends Controller
 
         // 時間データの処理
         if ($request->clock_in_time) {
-            $requestData['clock_in_time'] = $request->clock_in_time . ':00';
+            // 既に完全な日時文字列の場合はそのまま使用、そうでなければ:00を追加
+            $requestData['clock_in_time'] = strpos($request->clock_in_time, ':00') !== false
+                ? $request->clock_in_time
+                : $request->clock_in_time . ':00';
         }
         if ($request->clock_out_time) {
-            $requestData['clock_out_time'] = $request->clock_out_time . ':00';
+            // 既に完全な日時文字列の場合はそのまま使用、そうでなければ:00を追加
+            $requestData['clock_out_time'] = strpos($request->clock_out_time, ':00') !== false
+                ? $request->clock_out_time
+                : $request->clock_out_time . ':00';
         }
 
         // 休憩情報を収集

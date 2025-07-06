@@ -53,7 +53,7 @@ class LoginController extends Controller
         
         if (!$user) {
             return back()->withErrors([
-                'email' => 'ログイン情報が登録されていません。',
+                'email' => 'ログイン情報が登録されていません',
             ])->onlyInput('email');
         }
 
@@ -64,7 +64,7 @@ class LoginController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'パスワードが正しくありません。',
+            'email' => 'パスワードが正しくありません',
         ])->onlyInput('email');
     }
 

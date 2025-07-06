@@ -57,10 +57,27 @@
                 </thead>
                 <tbody>
                     @foreach($calendar as $date)
-                    <tr class="{{ $date['isToday'] ? 'today' : '' }} {{ $date['isWeekend'] ? 'weekend' : '' }}">
-                        <td>{{ $currentMonth->format('m') }}/{{ sprintf('%02d', $date['day']) }}({{ $date['weekday'] }})</td>
-                        <td>{{ $date['attendance'] && $date['attendance']->clock_in_time ? $date['attendance']->clock_in_time->format('H:i') : '' }}</td>
-                        <td>{{ $date['attendance'] && $date['attendance']->clock_out_time ? $date['attendance']->clock_out_time->format('H:i') : '' }}</td>
+                    <tr class="{{ $date['isToday'] ? 'today' : '' }} {{ $date['isWeekend'] ? 'weekend' : '' }} {{ $date['hasPendingRequest'] ? 'pending-request' : '' }}">
+                        <td>
+                            {{ $currentMonth->format('m') }}/{{ sprintf('%02d', $date['day']) }}({{ $date['weekday'] }})
+                            @if($date['hasPendingRequest'])
+                            <span class="pending-badge">申請中</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($date['hasPendingRequest'] && $date['attendanceRequest'])
+                            {{ $date['attendanceRequest']->clock_in_time ? $date['attendanceRequest']->clock_in_time->format('H:i') : '' }}
+                            @elseif($date['attendance'])
+                            {{ $date['attendance']->clock_in_time ? $date['attendance']->clock_in_time->format('H:i') : '' }}
+                            @endif
+                        </td>
+                        <td>
+                            @if($date['hasPendingRequest'] && $date['attendanceRequest'])
+                            {{ $date['attendanceRequest']->clock_out_time ? $date['attendanceRequest']->clock_out_time->format('H:i') : '' }}
+                            @elseif($date['attendance'])
+                            {{ $date['attendance']->clock_out_time ? $date['attendance']->clock_out_time->format('H:i') : '' }}
+                            @endif
+                        </td>
                         <td>{{ $date['breakTime'] }}</td>
                         <td>{{ $date['workTime'] }}</td>
                         <td>
@@ -77,6 +94,7 @@
         </div>
     </main>
 </div>
+
 @endsection
 
 @section('script')
