@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\Admin;
 use App\Models\AttendanceRequest;
 use App\Models\Breaktime;
 use App\Models\BreakRequest;
@@ -32,15 +34,13 @@ class AdminController extends Controller
     {
         $credentials = $request->validated();
 
-        // 固定の管理者認証情報
-        $adminEmail = 'admin@email';
-        $adminPassword = 'admin123';
+        // データベースから管理者を検索
+        $admin = \App\Models\Admin::where('email', $credentials['email'])->first();
 
-        // 固定の認証情報と比較
-        if ($credentials['email'] === $adminEmail && $credentials['password'] === $adminPassword) {
+        if ($admin && Hash::check($credentials['password'], $admin->password)) {
             // 管理者セッションを作成
             $request->session()->put('admin_logged_in', true);
-            $request->session()->put('admin_email', $adminEmail);
+            $request->session()->put('admin_email', $admin->email);
             $request->session()->regenerate();
 
             return redirect()->route('admin.attendances');

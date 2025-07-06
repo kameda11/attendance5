@@ -91,3 +91,8 @@
     align-items: center;
     justify-content: center;
 }
+
+/* ヘッダーのformクラスのmargin-bottomを削除 */
+.header-nav .form {
+    margin-bottom: 0;
+}

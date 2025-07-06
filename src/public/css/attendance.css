@@ -4,7 +4,7 @@
     font-family: 'Inter', sans-serif;
     background-color: #F0EFF2;
     min-height: 100vh;
-    padding-top: 100px;
+    padding: 20px 150px;
 }
 
 .attendance-status {

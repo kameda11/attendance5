@@ -49,11 +49,7 @@
                         <td class="user-name">{{ $request->user->name }}</td>
                         <td class="target-date">{{ $request->target_date->format('Y/m/d') }}</td>
                         <td class="request-reason">
-                            @if($request->notes)
                             {{ Str::limit($request->notes, 30) }}
-                            @else
-                            <span class="no-reason">理由なし</span>
-                            @endif
                         </td>
                         <td class="request-date">{{ $request->created_at->format('Y/m/d') }}</td>
                         <td>
